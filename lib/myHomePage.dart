@@ -25,7 +25,12 @@ class _HomePageState extends State<HomePage> {
   static const String _home = "Home";
   static const String _settings = "Einstellungen";
 
+  static const String _eco2 = "eCO2";
+  static const String _tvocs = "TVOCs";
+
   SettingsObject _personalSettings = SettingsObject();
+
+  bool show = false;
 
   // late  sharedPrefs;
 
@@ -96,115 +101,153 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: "eCO2",
+    return OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            return DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.title),
+                  bottom: const TabBar(
+                    tabs: [
+                      Tab(
+                        text: _eco2,
+                      ),
+                      Tab(
+                        text: _tvocs,
+                      )
+                    ],
+                  ),
+                ),
+                drawer: Drawer(
+                  child: ListView(
+                    children: [
+                      ListTile(
+                        title: const Text(
+                          _home,
+                          style: TextStyle(
+                            fontSize: 20
+                          ),
+                        ),
+                        leading: const Icon(
+                          Icons.home,
+                          color: Color(0xffdddddd),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(
+                        height: 2,
+                        thickness: 2,
+                        color: Color(0xffdddddd),
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                      ListTile(
+                        title: const Text(
+                          _verwalten,
+                          style: TextStyle(
+                              fontSize: 20
+                          ),
+                        ),
+                        leading: const Icon(
+                          Icons.add,
+                          color: Color(0xffdddddd),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AddDevice())
+                          );
+                        },
+                      ),
+                      const Divider(
+                        height: 2,
+                        thickness: 2,
+                        color: Color(0xffdddddd),
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                      ListTile(
+                        title: const Text(
+                          _settings,
+                          style: TextStyle(
+                              fontSize: 20
+                          ),
+                        ),
+                        leading: const Icon(
+                          Icons.settings,
+                          color: Color(0xffdddddd),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SettingsPage(settingsObject: _personalSettings))
+                          ).whenComplete(() => {
+                            _updateData()
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                body: TabBarView(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DiagramPage(diagramTitle: "eCO2", diagramData: dataEco2),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DiagramPage(diagramTitle: "TVOCs", diagramData: dataTvoc),
+                    )
+                  ],
+                ),
               ),
-              Tab(
-                text: "TVOCs"
+            );
+          } else {
+            return DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                appBar: AppBar(
+                  toolbarHeight: 0.0,
+                  bottom: const TabBar(
+                    tabs: [
+                      Tab(
+                        text: _eco2,
+                      ),
+                      Tab(
+                        text: _tvocs,
+                      )
+                    ],
+                  ),
+                ),
+                body: TabBarView(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DiagramPage(diagramTitle: "eCO2", diagramData: dataEco2),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DiagramPage(diagramTitle: "TVOCs", diagramData: dataTvoc),
+                    )
+                  ],
+                ),
               )
-            ],
-          ),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              ListTile(
-                title: const Text(
-                  _home,
-                  style: TextStyle(
-                      fontSize: 20
-                  ),
-                ),
-                leading: const Icon(
-                  Icons.home,
-                  color: Color(0xffdddddd),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                height: 2,
-                thickness: 2,
-                color: Color(0xffdddddd),
-                indent: 20,
-                endIndent: 20,
-              ),
-              ListTile(
-                title: const Text(
-                  _verwalten,
-                  style: TextStyle(
-                    fontSize: 20
-                  ),
-                ),
-                leading: const Icon(
-                  Icons.add,
-                  color: Color(0xffdddddd),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddDevice())
-                  );
-                },
-              ),
-              const Divider(
-                height: 2,
-                thickness: 2,
-                color: Color(0xffdddddd),
-                indent: 20,
-                endIndent: 20,
-              ),
-              ListTile(
-                title: const Text(
-                  _settings,
-                  style: TextStyle(
-                      fontSize: 20
-                  ),
-                ),
-                leading: const Icon(
-                  Icons.settings,
-                  color: Color(0xffdddddd),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              SettingsPage(settingsObject: _personalSettings))
-                  ).whenComplete(() => {
-                    _updateData()
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: DiagramPage(diagramTitle: "eCO2", diagramData: dataEco2),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: DiagramPage(diagramTitle: "TVOCs", diagramData: dataTvoc),
-            )
-          ],
-        ),
-      ),
+            );
+          }
+        }
     );
   }
 }
