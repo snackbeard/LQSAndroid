@@ -221,15 +221,21 @@ class _HomePageState extends State<HomePage> {
               child: Scaffold(
                 appBar: AppBar(
                   toolbarHeight: 0.0,
-                  bottom: const TabBar(
-                    tabs: [
-                      Tab(
-                        text: _eco2,
+                  bottom: const PreferredSize(
+                    preferredSize: Size(0.0, 0.0),
+                    child: SizedBox(
+                      width: 0.0,
+                      child: TabBar(
+                        tabs: [
+                          Tab(
+                            text: _eco2,
+                          ),
+                          Tab(
+                            text: _tvocs,
+                          )
+                        ],
                       ),
-                      Tab(
-                        text: _tvocs,
-                      )
-                    ],
+                    ),
                   ),
                 ),
                 body: TabBarView(
