@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:air_sensor_app/infrastructure/appUrl.dart';
 import 'package:http/http.dart' as http;
-
-const String url = 'http://192.168.178.28:8080';
-// const String url = 'http://10.0.2.2:8080';
 
 Future<List<QualityObject>> fetchTvocs(int backwards) async {
 
   List<QualityObject> qualityObjects;
 
   final response = await http
-      .get(Uri.parse('$url/api/v1/gettvocs.$backwards'));
+      .get(Uri.parse(AppUrl.buildUrl("gettvocs.$backwards", null)));
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body) as List;
@@ -32,7 +30,7 @@ Future<List<QualityObject>> fetchEco2(int backwards) async {
   List<QualityObject> qualityObjects;
 
   final response = await http
-      .get(Uri.parse('$url/api/v1/geteco2.$backwards'));
+      .get(Uri.parse(AppUrl.buildUrl('geteco2.$backwards', null)));
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body) as List;
