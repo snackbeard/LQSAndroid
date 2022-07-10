@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'addDevicePage.dart';
+import 'loginPage.dart';
 import 'classes/qualityObject.dart';
 
 class HomePage extends StatefulWidget {
@@ -69,8 +70,13 @@ class _HomePageState extends State<HomePage> {
       // no settings created yet, create new
       prefs.setInt('tvocsBackwards', 10);
       prefs.setInt('eco2Backwards', 10);
+      prefs.setString('username', '-');
+      prefs.setString('password', '-');
+
       settings.tvocsBackwards = 10;
       settings.eco2Backwards = 10;
+      settings.username = 'Philipp';
+      settings.password = 'Passwort';
 
     } else {
       debugPrint("load settings");
@@ -80,10 +86,14 @@ class _HomePageState extends State<HomePage> {
           prefs.getInt('tvocsBackwards');
       settings.eco2Backwards =
           prefs.getInt('eco2Backwards');
+      settings.username =
+          prefs.getString('username');
+      settings.password =
+          prefs.getString('password');
 
     }
 
-    // prefs.clear();
+    prefs.clear();
 
     settings.sharedPrefs = prefs;
 
@@ -94,6 +104,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    debugPrint("init homepage");
+
     _loadPrefs().then((value) {
       _personalSettings = value;
       _updateData();
