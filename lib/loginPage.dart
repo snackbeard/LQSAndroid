@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'classes/settingsObject.dart';
 import 'classes/user.dart';
@@ -77,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
+                widget.personalSettings.userId = snapshot.data!.userId;
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 Navigator.pushReplacement(
                   context,

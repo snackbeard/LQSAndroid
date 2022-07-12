@@ -38,10 +38,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const Divider(
               height: 2,
-              thickness: 3,
-              color: Colors.grey,
-              indent: 15,
-              endIndent: 15,
+              thickness: 2,
+              color: Color(0xffdddddd),
+              indent: 20,
+              endIndent: 20,
             ),
             ListTile(
               title: const Text(
@@ -61,7 +61,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
               },
             ),
-            const Divider()
           ],
         ),
       ),

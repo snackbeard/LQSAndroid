@@ -18,7 +18,7 @@ Future<User> login(User user) async {
   );
 
   if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
+    return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     throw (response.body);
   }
@@ -38,7 +38,7 @@ Future<User> register(User user) async {
   );
 
   if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
+    return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     throw (response.body);
   }

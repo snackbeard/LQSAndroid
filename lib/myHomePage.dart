@@ -63,11 +63,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _updateData();
     FlutterNativeSplash.remove();
+    debugPrint("userID: ${widget.personalSettings.userId}");
   }
 
   @override
   Widget build(BuildContext context) {
-
     return OrientationBuilder(
         builder: (context, orientation) {
           if (orientation == Orientation.portrait) {
@@ -127,7 +127,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.pop(context);
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const AddDevice())
+                              MaterialPageRoute(builder: (context) =>
+                                  AddDevice(personalSettings: widget.personalSettings))
                           );
                         },
                       ),
@@ -160,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                             _updateData()
                           });
                         },
-                      ),
+                      )
                     ],
                   ),
                 ),

@@ -5,6 +5,10 @@ class AppUrl {
   static const String userRegistration = 'user';
   // post
   static const String userLogin = 'user.login';
+  // get
+  static const String getAllControllers = 'controller';
+
+  static const String userPath = 'user';
 
 
   static String buildUrl(String resourcePath, String? function) {

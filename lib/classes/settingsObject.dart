@@ -5,6 +5,8 @@ class SettingsObject {
   int? tvocsBackwards = 96;
   int? eco2Backwards = 96;
 
+  late int userId;
+
   String? username = "-";
   String? password = "-";
 
