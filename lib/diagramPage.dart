@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DiagramPage extends StatefulWidget {
-  const DiagramPage({Key? key, required this.diagramTitle, required this.diagramData}) : super(key: key);
+  const DiagramPage({
+    Key? key,
+    required this.diagramTitle,
+    required this.diagramData,
+    required this.dataLabelVisibleLength}) : super(key: key);
 
   final String diagramTitle;
+  final int dataLabelVisibleLength;
 
   // zum erweitern List<List<QualityObject>> übergeben und im initState
   // eine LineSeries für jede Liste erstellen und unten hinzufügen
@@ -48,7 +53,7 @@ class _DiagramPageState extends State<DiagramPage> {
             xValueMapper: (QualityObject object, _) => object.timeOfRecording,
             yValueMapper: (QualityObject object, _) => object.value,
             dataLabelSettings: DataLabelSettings(
-              isVisible: (widget.diagramData.length <= 15) ? true : false,
+              isVisible: (widget.diagramData.length <= widget.dataLabelVisibleLength) ? true : false,
               textStyle: const TextStyle(
                 color: Color(0xff9be7ff)
               ),

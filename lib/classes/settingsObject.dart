@@ -16,6 +16,7 @@ class SettingsObject {
 
   setUsername(String value) {
     sharedPrefs.setString('username', value);
+    username = value;
   }
 
   getPassword() {
@@ -24,6 +25,7 @@ class SettingsObject {
 
   setPassword(String value) {
     sharedPrefs.setString('password', value);
+    password = value;
   }
 
   setTvocsBackwardsSelf() {

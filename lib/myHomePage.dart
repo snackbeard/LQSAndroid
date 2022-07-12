@@ -4,6 +4,7 @@ import 'package:air_sensor_app/classes/settingsObject.dart';
 import 'package:air_sensor_app/diagramPage.dart';
 import 'package:air_sensor_app/settingsPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'addDevicePage.dart';
@@ -12,9 +13,10 @@ import 'classes/qualityObject.dart';
 
 class HomePage extends StatefulWidget {
 
-  final String title;
+  const HomePage({Key? key, required this.title, required this.personalSettings}) : super(key: key);
 
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+  final SettingsObject personalSettings;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -29,18 +31,14 @@ class _HomePageState extends State<HomePage> {
   static const String _eco2 = "eCO2";
   static const String _tvocs = "TVOCs";
 
-  SettingsObject _personalSettings = SettingsObject();
-
   bool show = false;
-
-  // late  sharedPrefs;
 
   List<QualityObject> dataTvoc = <QualityObject>[];
   List<QualityObject> dataEco2 = <QualityObject>[];
 
   void _updateData() {
     debugPrint("updating data");
-    fetchTvocs(_personalSettings.tvocsBackwards!)
+    fetchTvocs(widget.personalSettings.tvocsBackwards!)
         .then((result) {
           // debugPrint("update");
           setState(() {
@@ -50,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         });
 
     fetchEco2(
-        _personalSettings.eco2Backwards!)
+        widget.personalSettings.eco2Backwards!)
         .then((result) {
       setState(() {
         dataEco2 = result;
@@ -60,60 +58,12 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Future<SettingsObject> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final SettingsObject settings = SettingsObject();
-
-
-    if (prefs.getInt('tvocsBackwards') == null) {
-      debugPrint("created new Settings");
-      // no settings created yet, create new
-      prefs.setInt('tvocsBackwards', 10);
-      prefs.setInt('eco2Backwards', 10);
-      prefs.setString('username', '-');
-      prefs.setString('password', '-');
-
-      settings.tvocsBackwards = 10;
-      settings.eco2Backwards = 10;
-      settings.username = 'Philipp';
-      settings.password = 'Passwort';
-
-    } else {
-      debugPrint("load settings");
-      // read settings
-
-      settings.tvocsBackwards =
-          prefs.getInt('tvocsBackwards');
-      settings.eco2Backwards =
-          prefs.getInt('eco2Backwards');
-      settings.username =
-          prefs.getString('username');
-      settings.password =
-          prefs.getString('password');
-
-    }
-
-    prefs.clear();
-
-    settings.sharedPrefs = prefs;
-
-    return settings;
-
-  }
-
   @override
   void initState() {
     super.initState();
-
-    debugPrint("init homepage");
-
-    _loadPrefs().then((value) {
-      _personalSettings = value;
-      _updateData();
-      Timer.periodic(const Duration(seconds: 120), (timer) => _updateData());
-    });
+    _updateData();
+    FlutterNativeSplash.remove();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SettingsPage(settingsObject: _personalSettings))
+                                      SettingsPage(settingsObject: widget.personalSettings))
                           ).whenComplete(() => {
                             _updateData()
                           });
@@ -218,11 +168,19 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: DiagramPage(diagramTitle: "eCO2", diagramData: dataEco2),
+                      child: DiagramPage(
+                        diagramTitle: "eCO2",
+                        diagramData: dataEco2,
+                        dataLabelVisibleLength: 15,
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: DiagramPage(diagramTitle: "TVOCs", diagramData: dataTvoc),
+                      child: DiagramPage(
+                        diagramTitle: "TVOCs",
+                        diagramData: dataTvoc,
+                        dataLabelVisibleLength: 15,
+                      ),
                     )
                   ],
                 ),
@@ -255,11 +213,19 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: DiagramPage(diagramTitle: "eCO2", diagramData: dataEco2),
+                      child: DiagramPage(
+                        diagramTitle: "eCO2",
+                        diagramData: dataEco2,
+                        dataLabelVisibleLength: 30,
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: DiagramPage(diagramTitle: "TVOCs", diagramData: dataTvoc),
+                      child: DiagramPage(
+                        diagramTitle: "TVOCs",
+                        diagramData: dataTvoc,
+                        dataLabelVisibleLength: 30,
+                      ),
                     )
                   ],
                 ),
