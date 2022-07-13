@@ -2,6 +2,7 @@ import 'package:air_sensor_app/classes/settingsObject.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'classes/controllerSubscription.dart';
 
@@ -16,11 +17,18 @@ class AddDevice extends StatefulWidget {
 
 class _AddDeviceState extends State<AddDevice> {
 
+  String _lastColor = '0xffffffff';
+
   Future<List<ControllerSubscription>> _startGetControllers(int userId) async {
-    List<ControllerSubscription> controllers = await fetchControllers(userId);
     await Future.delayed(const Duration(milliseconds: 500));
+    List<ControllerSubscription> controllers = await fetchControllers(userId);
     return controllers;
 
+  }
+
+  Future<bool> _startSubscribeController(int userId, int controllerId) async {
+    bool done = await subscribeController(userId, controllerId);
+    return done;
   }
 
   @override
@@ -39,19 +47,22 @@ class _AddDeviceState extends State<AddDevice> {
         child: FutureBuilder<List<ControllerSubscription>>(
           future: _startGetControllers(widget.personalSettings.userId),
           builder: (context, snapshot) {
-
             if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
+
+                  debugPrint(snapshot.data![index].color);
+                  debugPrint(int.parse(snapshot.data![index].color).toString());
+
                   return Column(
                     children: [
                       Row(
                         children: [
                           Expanded(
-                            flex: 7,
+                            flex: 6,
                             child: Container(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.only(top: 20, bottom: 20),
                               margin: const EdgeInsets.only(left: 20),
                               child: Text(
                                 snapshot.data![index].controller.name,
@@ -60,10 +71,67 @@ class _AddDeviceState extends State<AddDevice> {
                             ),
                           ),
                           Expanded(
-                            flex: 3,
+                            flex: 2,
                             child: Container(
-                              padding: const EdgeInsets.all(20.0),
-                              margin: const EdgeInsets.only(left: 20),
+                              padding: const EdgeInsets.only(top: 20, bottom: 20),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: snapshot.data![index].isSubscribed ? IconButton(
+                                  icon: const Icon(Icons.color_lens),
+                                  color: Color(int.parse(snapshot.data![index].color)),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: const Color(0xff111111),
+                                          title: const Text(
+                                            'Farbe auswählen!',
+                                            style: TextStyle(
+                                                color: Color(0xffdddddd)
+                                            ),
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: BlockPicker(
+                                              pickerColor: Colors.red,
+                                              onColorChanged: (Color color) {
+                                                _lastColor = color.value.toRadixString(16);
+                                              },
+                                            ),
+                                          ),
+                                          actions: [
+                                            ElevatedButton(
+                                              child: const Text(
+                                                'Bestätigen',
+                                                style: TextStyle(
+                                                  color: Color(0xffdddddd)
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                changeControllerColor(
+                                                  widget.personalSettings.userId,
+                                                  snapshot.data![index].controller.objectId,
+                                                  _lastColor
+                                                );
+                                                setState(() {
+                                                  _startGetControllers(widget.personalSettings.userId);
+                                                });
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      }
+                                    );
+                                  },
+                                ) : null,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              padding: const EdgeInsets.only(top: 20, bottom: 20),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: snapshot.data![index].isSubscribed ? IconButton(
@@ -77,9 +145,10 @@ class _AddDeviceState extends State<AddDevice> {
                                   color: const Color(0xffdddddd),
                                 ) : IconButton(
                                   onPressed: () {
-                                    subscribeController(widget.personalSettings.userId, snapshot.data![index].controller.objectId);
-                                    setState(() {
-                                      _startGetControllers(widget.personalSettings.userId);
+                                    _startSubscribeController(widget.personalSettings.userId, snapshot.data![index].controller.objectId).then((value) {
+                                      setState(() {
+                                        _startGetControllers(widget.personalSettings.userId);
+                                      });
                                     });
                                   },
                                   icon: const Icon(Icons.check_box_outline_blank),

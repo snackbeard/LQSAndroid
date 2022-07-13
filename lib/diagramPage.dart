@@ -34,14 +34,14 @@ class _DiagramPageState extends State<DiagramPage> {
         animationDelay: 500,
         animationDuration: 5000,
         name: controller.name,
-        color: const Color(0xff64b5f6),
+        color: Color(int.parse(controller.color)),
         dataSource: controller.data,
         xValueMapper: (QualityObject object, _) => object.timeOfRecording,
         yValueMapper: (QualityObject object, _) => object.value,
         dataLabelSettings: DataLabelSettings(
           isVisible: (controller.data.length <= widget.dataLabelVisibleLength && widget.diagramData.length == 1) ? true : false,
-          textStyle: const TextStyle(
-              color: Color(0xff9be7ff)
+          textStyle: TextStyle(
+              color: Color(int.parse(controller.color))
           ),
         ),
       ));
@@ -70,7 +70,9 @@ class _DiagramPageState extends State<DiagramPage> {
         ),
         legend: Legend(
           isVisible: true,
-
+          textStyle: const TextStyle(
+            color: Color(0xffdddddd),
+          ),
         ),
         primaryXAxis: CategoryAxis(
           majorGridLines: const MajorGridLines(width: 0),

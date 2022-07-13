@@ -50,19 +50,40 @@ Future<bool> subscribeController(int userId, int controllerId) async {
   }
 }
 
+Future<bool> changeControllerColor(int userId, int controllerId, String color) async {
+  final response = await http
+    .post(Uri.parse(AppUrl.buildUrl(AppUrl.userPath, '.$userId.changeColorOf.$controllerId')),
+    headers: <String, String> {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String> {
+      'color': '0x$color',
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    throw (response.body);
+  }
+}
+
 class ControllerSubscription {
   bool isSubscribed;
   ControllerEsp controller;
+  String color;
 
   ControllerSubscription({
     required this.isSubscribed,
-    required this.controller
+    required this.controller,
+    required this.color
   });
 
   factory ControllerSubscription.fromJson(Map<String, dynamic> json) {
     return ControllerSubscription(
-        isSubscribed: json['isSubscribed'],
-        controller: ControllerEsp.fromJson(json['controller'])
+      color: json['color'],
+      isSubscribed: json['isSubscribed'],
+      controller: ControllerEsp.fromJson(json['controller'])
     );
   }
 

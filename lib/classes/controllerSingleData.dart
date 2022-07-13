@@ -52,11 +52,13 @@ Future<List<ControllerSingleData>> fetchDataEco2(int userId, int backwards) asyn
 
 class ControllerSingleData {
   String name;
+  String color;
   List<QualityObject> data;
 
   ControllerSingleData({
     required this.name,
-    required this.data
+    required this.data,
+    required this.color
   });
 
   factory ControllerSingleData.fromJson(Map<String, dynamic> json) {
@@ -64,6 +66,7 @@ class ControllerSingleData {
     var data = json['data'] as List;
 
     return ControllerSingleData(
+      color: json['color'],
       name: json['name'],
       data: data.map((e) => QualityObject.fromJson(e)).toList()
     );

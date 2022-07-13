@@ -53,6 +53,3 @@ class MyApp extends StatelessWidget {
   }
 
 }
-
-// TODO: sobald app minimiert wird soll nichts mehr im hintergrund passieren,
-// TODO: da der Timer sonst immer weiterläuft und updates holt --> akku

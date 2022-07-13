@@ -101,32 +101,6 @@ class _DiagramSettingsPageState extends State<DiagramSettingsPage> {
               indent: 20,
               endIndent: 20,
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(20.0),
-                    margin: const EdgeInsets.only(left: 20),
-                    child: Text(
-                      _textcolorpicker,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-                const Expanded(
-                    flex: 2,
-                    child: Text("Placeholder")
-                )
-              ],
-            ),
-            const Divider(
-              height: 2,
-              thickness: 2,
-              color: Color(0xffdddddd),
-              indent: 20,
-              endIndent: 20,
-            )
           ],
         ),
       ),
