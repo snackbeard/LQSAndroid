@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:air_sensor_app/classes/controllerSingleData.dart';
 import 'package:air_sensor_app/classes/settingsObject.dart';
 import 'package:air_sensor_app/diagramPage.dart';
 import 'package:air_sensor_app/settingsPage.dart';
@@ -33,29 +34,31 @@ class _HomePageState extends State<HomePage> {
 
   bool show = false;
 
-  List<QualityObject> dataTvoc = <QualityObject>[];
-  List<QualityObject> dataEco2 = <QualityObject>[];
+  // List<QualityObject> dataTvoc = <QualityObject>[];
+  // List<QualityObject> dataEco2 = <QualityObject>[];
+  List<ControllerSingleData> dataTvoc = <ControllerSingleData>[];
+  List<ControllerSingleData> dataEco2 = <ControllerSingleData>[];
 
   void _updateData() {
-    debugPrint("updating data");
-    fetchTvocs(widget.personalSettings.tvocsBackwards!)
-        .then((result) {
-          // debugPrint("update");
-          setState(() {
-            dataTvoc = result;
-            // debugPrint(data.toString());
-          });
-        });
 
-    fetchEco2(
-        widget.personalSettings.eco2Backwards!)
-        .then((result) {
-      setState(() {
-        dataEco2 = result;
-        debugPrint(dataEco2.length.toString());
-      });
+    debugPrint("updating data");
+    fetchDataTvoc(
+      widget.personalSettings.userId,
+      widget.personalSettings.tvocsBackwards!).then((result) {
+        debugPrint(result.length.toString());
+        setState(() {
+          dataTvoc = result;
+        });
     });
 
+    fetchDataEco2(
+        widget.personalSettings.userId,
+        widget.personalSettings.eco2Backwards!).then((result) {
+          debugPrint(result.length.toString());
+          setState(() {
+            dataEco2 = result;
+          });
+    });
   }
 
   @override
@@ -129,7 +132,9 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   AddDevice(personalSettings: widget.personalSettings))
-                          );
+                          ).whenComplete(() => {
+                            _updateData()
+                          });
                         },
                       ),
                       const Divider(

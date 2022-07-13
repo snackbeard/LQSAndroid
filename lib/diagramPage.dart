@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import 'classes/controllerSingleData.dart';
+
 class DiagramPage extends StatefulWidget {
   const DiagramPage({
     Key? key,
@@ -15,13 +17,46 @@ class DiagramPage extends StatefulWidget {
 
   // zum erweitern List<List<QualityObject>> übergeben und im initState
   // eine LineSeries für jede Liste erstellen und unten hinzufügen
-  final List<QualityObject> diagramData;
+  final List<ControllerSingleData> diagramData;
 
   @override
   State<DiagramPage> createState() => _DiagramPageState();
 }
 
 class _DiagramPageState extends State<DiagramPage> {
+
+
+  List<LineSeries<QualityObject, String>> getSeries() {
+    List<LineSeries<QualityObject, String>> lines = [];
+
+    for (var controller in widget.diagramData) {
+      lines.add(LineSeries(
+        animationDelay: 500,
+        animationDuration: 5000,
+        name: controller.name,
+        color: const Color(0xff64b5f6),
+        dataSource: controller.data,
+        xValueMapper: (QualityObject object, _) => object.timeOfRecording,
+        yValueMapper: (QualityObject object, _) => object.value,
+        dataLabelSettings: DataLabelSettings(
+          isVisible: (controller.data.length <= widget.dataLabelVisibleLength && widget.diagramData.length == 1) ? true : false,
+          textStyle: const TextStyle(
+              color: Color(0xff9be7ff)
+          ),
+        ),
+      ));
+    }
+
+    return lines;
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -32,6 +67,10 @@ class _DiagramPageState extends State<DiagramPage> {
           textStyle: const TextStyle(
             color: Color(0xffdddddd)
           ),
+        ),
+        legend: Legend(
+          isVisible: true,
+
         ),
         primaryXAxis: CategoryAxis(
           majorGridLines: const MajorGridLines(width: 0),
@@ -46,21 +85,7 @@ class _DiagramPageState extends State<DiagramPage> {
             color: Color(0xffdddddd)
           ),
         ),
-        series: <LineSeries<QualityObject, String>>[
-          LineSeries<QualityObject, String>(
-            color: const Color(0xff64b5f6),
-            dataSource: widget.diagramData,
-            xValueMapper: (QualityObject object, _) => object.timeOfRecording,
-            yValueMapper: (QualityObject object, _) => object.value,
-            dataLabelSettings: DataLabelSettings(
-              isVisible: (widget.diagramData.length <= widget.dataLabelVisibleLength) ? true : false,
-              textStyle: const TextStyle(
-                color: Color(0xff9be7ff)
-              ),
-            ),
-          ),
-          //TODO bei bedarf weitere lines hinzufügen
-        ],
+        series: getSeries(),
       ),
     );
   }
