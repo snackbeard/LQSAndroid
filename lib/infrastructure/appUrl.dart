@@ -1,5 +1,6 @@
 class AppUrl {
   static const String baseUrl = 'http://192.168.178.28:8080/api/v1/';
+  // static const String baseUrl = 'http://192.168.178.99:8080/api/v1/';
 
   // post
   static const String userRegistration = 'user';

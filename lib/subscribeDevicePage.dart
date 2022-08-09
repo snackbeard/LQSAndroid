@@ -1,21 +1,19 @@
 import 'package:air_sensor_app/classes/settingsObject.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'classes/controllerSubscription.dart';
 
-class AddDevice extends StatefulWidget {
-  const AddDevice({Key? key, required this.personalSettings}) : super(key: key);
+class SubscribeDevice extends StatefulWidget {
+  const SubscribeDevice({Key? key, required this.personalSettings}) : super(key: key);
 
   final SettingsObject personalSettings;
 
   @override
-  State<AddDevice> createState() => _AddDeviceState();
+  State<SubscribeDevice> createState() => _SubscribeDeviceState();
 }
 
-class _AddDeviceState extends State<AddDevice> {
+class _SubscribeDeviceState extends State<SubscribeDevice> {
 
   String _lastColor = '0xffffffff';
 

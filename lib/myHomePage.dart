@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'addDevicePage.dart';
+import 'newDevicePage.dart';
+import 'subscribeDevicePage.dart';
 import 'loginPage.dart';
 import 'classes/qualityObject.dart';
 
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   static const String _verwalten = "Geräte verwalten";
   static const String _home = "Home";
   static const String _settings = "Einstellungen";
+  static const String _addDevice = "Gerät hinzufügen";
 
   static const String _eco2 = "eCO2";
   static const String _tvocs = "TVOCs";
@@ -123,6 +125,35 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         leading: const Icon(
+                          Icons.perm_device_info,
+                          color: Color(0xffdddddd),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  SubscribeDevice(personalSettings: widget.personalSettings))
+                          ).whenComplete(() => {
+                            _updateData()
+                          });
+                        },
+                      ),
+                      const Divider(
+                        height: 2,
+                        thickness: 2,
+                        color: Color(0xffdddddd),
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                      ListTile(
+                        title: const Text(
+                          _addDevice,
+                          style: TextStyle(
+                              fontSize: 20
+                          ),
+                        ),
+                        leading: const Icon(
                           Icons.add,
                           color: Color(0xffdddddd),
                         ),
@@ -131,10 +162,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
-                                  AddDevice(personalSettings: widget.personalSettings))
-                          ).whenComplete(() => {
-                            _updateData()
-                          });
+                                  const NewDevice())
+                          );
                         },
                       ),
                       const Divider(

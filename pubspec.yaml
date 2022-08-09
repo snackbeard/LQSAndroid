@@ -40,6 +40,7 @@ dependencies:
   flutter_native_splash: ^2.2.4
   numberpicker: ^2.1.1
   flutter_colorpicker: ^1.0.3
+  flutter_bluetooth_serial: ^0.4.0
 
 flutter_native_splash:
   image: assets/icon.png
