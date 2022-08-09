@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -67,7 +68,12 @@ class _NewDeviceState extends State<NewDevice> {
     try {
       BluetoothConnection connection = await BluetoothConnection.toAddress(address);
       debugPrint(connection.isConnected.toString());
-      debugPrint('connected');
+      debugPrint('connected, sending data');
+      List<int> list = 'test'.codeUnits;
+      Uint8List bytes = Uint8List.fromList(list);
+      connection.output.add(bytes);
+      await connection.output.allSent;
+      debugPrint("data send");
       // https://pub.dev/packages/flutter_bluetooth_serial
       // redirect configuration page
     } catch (exception) {
