@@ -18,3 +18,5 @@ Current features:
 
 Planned features:
 - Firebase Push Notifications if threshold of eCO2 or TVOC values is exceeded
+- Subscribe to Controllers without ever getting a push notification (just for seeing the values)
+- Setting your preferred notification interval (after getting a notification, you won't get another one in your specified time e.g. 30 min)
