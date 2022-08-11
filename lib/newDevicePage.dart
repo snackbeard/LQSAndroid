@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
+
+import 'classes/espConfigurationObject.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -17,6 +20,7 @@ class _NewDeviceState extends State<NewDevice> {
   StreamSubscription<BluetoothDiscoveryResult>? _streamSubscription;
   List<BluetoothDiscoveryResult> results = List<BluetoothDiscoveryResult>.empty(growable: true);
   bool isDiscovering = true;
+  ControllerConfiguration cc = ControllerConfiguration();
 
   _NewDeviceState();
 
@@ -64,20 +68,42 @@ class _NewDeviceState extends State<NewDevice> {
     _startDiscovery();
   }
 
-  void _connectToBt(String address) async {
+  void _sendDataBt(String address) async {
     try {
-      BluetoothConnection connection = await BluetoothConnection.toAddress(address);
-      debugPrint(connection.isConnected.toString());
-      debugPrint('connected, sending data');
-      List<int> list = 'test'.codeUnits;
-      Uint8List bytes = Uint8List.fromList(list);
-      connection.output.add(bytes);
-      await connection.output.allSent;
-      debugPrint("data send");
-      // https://pub.dev/packages/flutter_bluetooth_serial
-      // redirect configuration page
+        cc.checkValues();
+        BluetoothConnection connection = await BluetoothConnection.toAddress(
+            address);
+        debugPrint(connection.isConnected.toString());
+        debugPrint('connected');
+        List<int> list = cc.toBtString().codeUnits;
+        Uint8List bytes = Uint8List.fromList(list);
+        connection.output.add(bytes);
+        await connection.output.allSent;
+        connection.input?.listen((Uint8List data) {
+          if (ascii.decode(data).contains('1')) {
+            connection.finish();
+            debugPrint('disconnected');
+            Navigator.of(context).pop();
+            cc = ControllerConfiguration();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Color(0xff64b5f6),
+                content: Text('Erfolgreich konfiguriert!'),
+              ),
+            );
+          }
+        });
+        debugPrint("data send??");
+        // https://pub.dev/packages/flutter_bluetooth_serial
+        // redirect configuration page
     } catch (exception) {
       debugPrint(exception.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xff64b5f6),
+          content: Text(exception.toString()),
+        ),
+      );
     }
   }
 
@@ -139,7 +165,65 @@ class _NewDeviceState extends State<NewDevice> {
                           color: const Color(0xffdddddd),
                           onPressed: () {
                             debugPrint("click");
-                            _connectToBt(address);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Bitte Konfigurieren'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextField(
+                                        decoration: const InputDecoration(hintText: 'WiFi Name'),
+                                        onChanged: (value) {
+                                          cc.ssid = value;
+                                        },
+                                      ),
+                                      TextField(
+                                        obscureText: true,
+                                        enableSuggestions: false,
+                                        autocorrect: false,
+                                        decoration: const InputDecoration(hintText: 'WiFi Password'),
+                                        onChanged: (value) {
+                                          cc.password = value;
+                                        },
+                                      ),
+                                      TextField(
+                                        decoration: const InputDecoration(hintText: 'Server IP'),
+                                        onChanged: (value) {
+                                          cc.serverIp = value;
+                                        },
+                                      ),
+                                      TextField(
+                                        decoration: const InputDecoration(hintText: 'Port'),
+                                        onChanged: (value) {
+                                          cc.port = value;
+                                        },
+                                      ),
+                                      TextField(
+                                        decoration: const InputDecoration(hintText: 'Controller Name'),
+                                        onChanged: (value) {
+                                          cc.controllerName = value;
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      child: const Text(
+                                        'Bestätigen',
+                                        style: TextStyle(
+                                            color: Color(0xffdddddd)
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        _sendDataBt(address);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                            );
                           },
                         ),
                       ),
